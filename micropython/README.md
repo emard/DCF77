@@ -9,7 +9,7 @@ GPIO15 and GND.
 
 For precise frequency, ESP32 RMT module is used to
 generate the PWM signal because standard PWM module is not
-accurate enough to generate precise 77.5 kHz carrier frequency.
+accurate enough to generate exactly 77.5 kHz carrier frequency.
 
 Amplitude modulation is done by driving LC resonant
 circuit with 2 different duty cycles, about 50% DTC
