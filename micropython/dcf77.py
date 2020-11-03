@@ -177,6 +177,8 @@ def second_tick(t):
   else:
     if ntpday==0 or (sendtime[cday]!=ntpday and sendtime[cminute]==30):
       set_ntp()
+    if ntpday==0:
+      ask.write_pulses([4000],start=0) # turn off transmitter
     generate_time()
     generate_minute()
     #print(minute)
