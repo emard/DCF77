@@ -24,10 +24,9 @@ index=bytearray(1)
 
 led=Pin(2,Pin.OUT)
 antena=Pin(15,Pin.OUT)
-cw=PWM(antena,freq=77500)
-cw.duty(0)
+cw=PWM(antena,freq=100000,duty=0)
 cw.deinit()
-cw=PWM(antena,freq=77500)
+cw=PWM(antena,freq=77500,duty=0)
 
 timer=Timer(3)
 
