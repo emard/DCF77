@@ -35,7 +35,7 @@ ask.loop(True)
 on2=514
 off2=1032-on2
 # power level 1 (15% lower amplitude on scope)
-on1=on2*55//100
+on1=on2*54//100
 off1=1032-on1
 
 # debug - no level change
