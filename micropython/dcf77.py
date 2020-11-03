@@ -1,7 +1,8 @@
 import time
 from micropython import const, alloc_emergency_exception_buf
 from uctypes import addressof
-from machine import Pin, PWM, Timer
+from machine import Pin, Timer
+from esp32 import RMT
 import dst
 
 cyear=const(0)
@@ -21,14 +22,45 @@ second=bytearray(1)
 minute=bytearray(59)
 # index for writing to minute[]
 index=bytearray(1)
+# 1-second timer
+timer=Timer(3)
 
 led=Pin(2,Pin.OUT)
 antena=Pin(15,Pin.OUT)
-cw=PWM(antena,freq=100000,duty=0)
-cw.deinit()
-cw=PWM(antena,freq=77500,duty=0)
+ask=RMT(0,pin=antena,carrier_freq=0,clock_div=1) # 80 MHz
+ask.loop(True)
 
-timer=Timer(3)
+# coarse tuned for 77.5 kHz
+# power level 2 (50% DTC)
+on2=514
+off2=1032-on2
+# power level 1 (15% lower amplitude on scope)
+on1=on2*55//100
+off1=1032-on1
+
+# debug - no level change
+#on1=on2
+#off1=off2
+#on2=on1
+#off2=off1
+
+# t=0..8 fine tuning
+def tuning(t=1):
+  global pwr1, pwr2
+  # fine-tuned for 77.5 kHz, two power levels
+  m=16 # levels of fine tuning
+  pwr1=[]
+  pwr2=[]
+  for i in range(m):
+    pwr1.append(off1)
+    pwr1.append(on1)
+    pwr2.append(off2)
+    pwr2.append(on2)
+  for i in range(t):
+    pwr1[i*2]-=1
+    pwr2[i*2]-=1
+  # print tuning results, should be around 77500 for both
+  print(ask.source_freq()*m//sum(pwr1), ask.source_freq()*m//sum(pwr2))
 
 # write n bits of val at ith position, LSB first
 @micropython.viper
@@ -111,30 +143,29 @@ def generate_minute():
   bcd(sendtime[cyear],8)
   parity(22)
 
-@micropython.viper
 def second_tick(t):
-  p=ptr8(addressof(second))
-  m=ptr8(addressof(minute))
+  global pwr1, pwr2
+  p=memoryview(second)
+  m=memoryview(minute)
   if p[0]<59:
     led.on()
-    cw.duty(128)
+    ask.write_pulses(pwr1,start=0)
     time.sleep_ms(100+100*(m[p[0]]&1))
-    cw.duty(512)
+    ask.write_pulses(pwr2,start=0)
     led.off()
     p[0]+=1
   else:
     generate_time()
     generate_minute()
-    print(minute)
+    #print(minute)
     p[0]=0
 
 def run():
   timer.init(mode=Timer.PERIODIC, period=1000, callback=second_tick)
 
-#t=time.localtime()
-#print(t)
-#print(t[cyear],t[cmonth],t[cday],t[chour],t[cminute],t[csecond],t[cweekday])
+tuning()
 generate_time()
 generate_minute()
 print(minute)
 run()
+ 
