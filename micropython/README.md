@@ -3,15 +3,19 @@
 It is connected to series LC resonant circuit
 with ferrite core, tuned to 77.5 kHz approx.
 
-Using RMT module, signal is adjusted at the source
-and results measured with the scope.
+For precise frequency, RMT module is used to
+generate the PWM signal because PWM module is not
+accurate enough for 77.5 kHz carrier frequency.
 
-Frequency is 77.4994 kHz
+Amplitude modulation is done by driving LC resonant
+circuit with 55% reduced duty cycle, on the scope it
+is measured as 15% amplitude reduction.
 
-amplitude modulation is done by PWM driving LC resonant
-circuit, on the scope it can be measured as 15% amplitude reduction.
+Summary:
 
-Each second it sends 0 for 100ms, 1 for 200ms.
+Frequency: 77.4994 kHz
+Modulation: -15% of carrier amplitude
+0 time: 100ms, 1 time: 200ms, each second.
 
 But DCF77 clocks don't recognize this signal
 no idea why ...
