@@ -19,8 +19,10 @@ carrier with reduced amplitude while sending 0 or 1.
 Frequency and amplitude modulation is measured with oscilloscope:
 
 Frequency: 77.4994 kHz
+
 Modulation: -15% of full carrier amplitude.
-sending: 0: 100ms, 1: 200ms (each second).
+
+Bit times: 0: 100ms, 1: 200ms (each second).
 
 But DCF77 clocks don't recognize this signal
 no idea why ...
