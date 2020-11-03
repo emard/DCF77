@@ -16,7 +16,7 @@ circuit with 2 different duty cycles, about 50% DTC
 for unmodulated carrier and about 27% DTC for modulated
 carrier with reduced amplitude while sending 0 or 1.
 
-Summary:
+Frequency and amplitude modulation is measured with oscilloscope:
 
 Frequency: 77.4994 kHz
 Modulation: -15% of full carrier amplitude.
