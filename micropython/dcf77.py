@@ -30,13 +30,23 @@ antena=Pin(15,Pin.OUT)
 ask=RMT(0,pin=antena,carrier_freq=0,clock_div=1) # 80 MHz
 ask.loop(True)
 
+# desired carrier frequency
+freq=77500
+# tuning paramters - adjust with scope
+# coarse tuning, about 75 Hz per step
+tuning_coarse=-1
+# fine tuning 0-16, about 5 Hz per step
+tuning_fine=12
+
+period=int(ask.source_freq())//freq-tuning_coarse
+print("period", period)
 # coarse tuned for 77.5 kHz
 # power level 2 (50% DTC)
-on2=514
-off2=1032-on2
-# power level 1 (15% lower amplitude on scope)
-on1=on2*54//100
-off1=1032-on1
+on2=period//2
+off2=period-on2
+# power level 1 (adjust -15% amplitude on scope)
+on1=on2*50//100
+off1=period-on1
 
 # debug - no level change
 #on1=on2
@@ -44,10 +54,8 @@ off1=1032-on1
 #on2=on1
 #off2=off1
 
-# t=0..8 fine tuning
-def tuning(t=1):
+def tuning(t):
   global pwr1, pwr2
-  # fine-tuned for 77.5 kHz, two power levels
   m=16 # levels of fine tuning
   pwr1=[]
   pwr2=[]
@@ -60,7 +68,7 @@ def tuning(t=1):
     pwr1[i*2]-=1
     pwr2[i*2]-=1
   # print tuning results, should be around 77500 for both
-  print("tuning", ask.source_freq()*m//sum(pwr1), ask.source_freq()*m//sum(pwr2), "Hz")
+  print("tuning", int(ask.source_freq())*m//sum(pwr1), int(ask.source_freq())*m//sum(pwr2), "Hz")
 
 # write n bits of val at ith position, LSB first
 @micropython.viper
@@ -169,7 +177,7 @@ try:
 except:
   print("NTP not available")
 
-tuning()
+tuning(tuning_fine)
 generate_time()
 generate_minute()
 print(minute)
