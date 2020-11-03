@@ -1,9 +1,9 @@
-import time
+from ntptime import settime
 from micropython import const, alloc_emergency_exception_buf
 from uctypes import addressof
 from machine import Pin, Timer
 from esp32 import RMT
-import dst
+import time, dst
 
 cyear=const(0)
 cmonth=const(1)
@@ -60,7 +60,7 @@ def tuning(t=1):
     pwr1[i*2]-=1
     pwr2[i*2]-=1
   # print tuning results, should be around 77500 for both
-  print(ask.source_freq()*m//sum(pwr1), ask.source_freq()*m//sum(pwr2))
+  print("tuning", ask.source_freq()*m//sum(pwr1), ask.source_freq()*m//sum(pwr2), "Hz")
 
 # write n bits of val at ith position, LSB first
 @micropython.viper
@@ -162,6 +162,12 @@ def second_tick(t):
 
 def run():
   timer.init(mode=Timer.PERIODIC, period=1000, callback=second_tick)
+
+try:
+  settime()
+  print("NTP set to", time.localtime())
+except:
+  print("NTP not available")
 
 tuning()
 generate_time()
