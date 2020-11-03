@@ -19,3 +19,7 @@ carrier with 25% reduced amplitude while sending 0 or 1.
 Frequency and amplitude modulation is measured with oscilloscope
 connected to 3-turn wire as probe coil placed near the LC circuit.
 Tuning paramters are adjusted when measured with the scope.
+
+# Requirements
+
+Micropython 1.13 or higer (from esp32 import RMT)
