@@ -167,7 +167,7 @@ def second_tick(t):
   p=memoryview(second)
   m=memoryview(minute)
   if p[0]<59:
-    if ntpday:
+    if ntpday>0:
       led.on()
       ask.write_pulses(pwr1,start=0)
       time.sleep_ms(100+100*(m[p[0]]&1))
@@ -175,7 +175,7 @@ def second_tick(t):
       led.off()
     p[0]+=1
   else:
-    if ntpday or (sendtime[cday]!=ntpday and sendtime[chour]==20 and sendtime[cminute]==30):
+    if ntpday==0 or (sendtime[cday]!=ntpday and sendtime[cminute]==30):
       set_ntp()
     generate_time()
     generate_minute()
