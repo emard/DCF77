@@ -17,7 +17,7 @@ for unmodulated carrier and about 27% DTC for modulated
 carrier with reduced amplitude while sending 0 or 1.
 
 Frequency and amplitude modulation is measured with oscilloscope
-connected to 3-turn probe coil.
+connected to 3-turn probe coil approached near the LC circuit.
 
 Frequency: 77.4994 kHz
 
