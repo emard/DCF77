@@ -25,6 +25,9 @@ index=bytearray(1)
 # 1-second timer
 timer=Timer(3)
 
+# last day NTP was set
+ntpday=0
+
 led=Pin(2,Pin.OUT)
 antena=Pin(15,Pin.OUT)
 ask=RMT(0,pin=antena,carrier_freq=0,clock_div=1) # 80 MHz
@@ -45,7 +48,7 @@ print("period", period)
 on2=period//2
 off2=period-on2
 # power level 1 (adjust -15% amplitude on scope)
-on1=on2*50//100
+on1=on2*10//100
 off1=period-on1
 
 # debug - no level change
@@ -151,18 +154,29 @@ def generate_minute():
   bcd(sendtime[cyear],8)
   parity(22)
 
+def set_ntp():
+  global ntpday
+  try:
+    settime()
+    ntpday=time.localtime()[cday]
+  except:
+    ntpday=0
+
 def second_tick(t):
-  global pwr1, pwr2
+  #global pwr1, pwr2
   p=memoryview(second)
   m=memoryview(minute)
   if p[0]<59:
-    led.on()
-    ask.write_pulses(pwr1,start=0)
-    time.sleep_ms(100+100*(m[p[0]]&1))
-    ask.write_pulses(pwr2,start=0)
-    led.off()
+    if ntpday:
+      led.on()
+      ask.write_pulses(pwr1,start=0)
+      time.sleep_ms(100+100*(m[p[0]]&1))
+      ask.write_pulses(pwr2,start=0)
+      led.off()
     p[0]+=1
   else:
+    if ntpday or (sendtime[cday]!=ntpday and sendtime[chour]==20 and sendtime[cminute]==30):
+      set_ntp()
     generate_time()
     generate_minute()
     #print(minute)
@@ -171,12 +185,7 @@ def second_tick(t):
 def run():
   timer.init(mode=Timer.PERIODIC, period=1000, callback=second_tick)
 
-try:
-  settime()
-  print("NTP set to", time.localtime())
-except:
-  print("NTP not available")
-
+set_ntp()
 tuning(tuning_fine)
 generate_time()
 generate_minute()
