@@ -25,6 +25,13 @@ with 3.3V source. The signal can reach few meters
 and cover one average room, but can't reach over several
 rooms.
 
+# Daylight Saving Time
+
+ESP32 can't hold large database of timezones, so
+here is small file "dst.py" with simple calculation
+of daylight saving time for central europe.
+Edit this to your preference.
+
 # Requirements
 
 Micropython 1.13 or higer (from esp32 import RMT)
