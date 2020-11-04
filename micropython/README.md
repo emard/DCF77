@@ -20,6 +20,11 @@ Frequency and amplitude modulation is measured with oscilloscope
 connected to 3-turn wire as probe coil placed near the LC circuit.
 Tuning paramters are adjusted when measured with the scope.
 
+At resonance the voltage accross coil is 15-20V when driven
+with 3.3V source. The signal can reach few meters
+and cover one average room, but can't reach over several
+rooms.
+
 # Requirements
 
 Micropython 1.13 or higer (from esp32 import RMT)
