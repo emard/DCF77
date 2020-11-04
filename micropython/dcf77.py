@@ -182,7 +182,11 @@ def second_tick(t):
     generate_time()
     generate_minute()
     #print(minute)
-    p[0]=0
+    # every 10 minutes synchronize seconds
+    if sendtime[cminute]%10==5:
+      p[0]=sendtime[csecond]
+    else:
+      p[0]=0
 
 def run():
   timer.init(mode=Timer.PERIODIC, period=1000, callback=second_tick)
