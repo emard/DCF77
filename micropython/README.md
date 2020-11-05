@@ -1,11 +1,16 @@
 # ESP32 as DCF77 transmitter (micropython)
 
 Series LC resonant circuit is tuned to 77.5 kHz.
-LC circuit consits of a coil wound on a ferrite core
-and a 4.7nF capacitor, chosen among many to best fit
-for 77.5 kHz.
+Coil is wound on a ferrite core
+and some capacitor chosen for example:
+
+L=4.22mH + C=1nF or L=0.96mH + C=4.7nF
+
 LC circuit is connected to ESP32 between
-GPIO15 and GND.
+GPIO15 and GND. 3.6V zener diode is for
+protection, not neccessary but recommended.
+
+![LC circuit](/pic/LC.png)
 
 For precise frequency, ESP32 RMT module is used to
 generate the PWM signal because standard PWM module is not
