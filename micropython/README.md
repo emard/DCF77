@@ -27,13 +27,18 @@ Tuning paramters are adjusted when measured with the scope.
 
 At resonance the voltage accross coil is 15-20V when driven
 with 3.3V source. The signal can reach few meters
-and cover one average room, but can't reach over several
+and cover one average room, but can't reach thru multiple
 rooms.
+
+# Installation
+
+Copy "dcf77.py" and "dst.py" to root "/" of ESP32 flash
+or to "/lib" directory (it's the same).
 
 # Daylight Saving Time
 
-ESP32 can't hold large database of timezones, so
-here is small file "dst.py" with simple calculation
+ESP32 can't hold large database of timezones.
+In the file "dst.py" is a simple calculation
 of daylight saving time for central europe.
 Edit this to your preference.
 
