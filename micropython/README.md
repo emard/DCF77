@@ -34,6 +34,10 @@ rooms.
 
 Copy "dcf77.py" and "dst.py" to root "/" of ESP32 flash
 or to "/lib" directory (it's the same).
+For autostart, at end of "main.py" after network is up,
+add this line:
+
+    import dcf77
 
 # Daylight Saving Time
 
