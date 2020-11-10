@@ -175,6 +175,8 @@ def second_tick(t):
   #global pwr1, pwr2
   p=memoryview(second)
   m=memoryview(minute)
+  xd=(p[0]%15)*8
+  yd=(p[0]//15)*12+17
   if p[0]<59:
     if ntpday>0:
       bit=m[p[0]]&1
@@ -183,7 +185,9 @@ def second_tick(t):
       time.sleep_ms(100*(bit+1))
       ask.write_pulses(pwr2,start=0)
       led.off()
-      oled.hline(p[0]*2,63-bit*2,bit+1,1)
+      oled.text("%d"%bit,xd,yd)
+      oled.hline(xd,yd+10,(bit+1),1)
+      oled.hline(xd+bit+1,yd+8,7-bit,1)
       oled.show()
     p[0]+=1
   else:
@@ -198,13 +202,13 @@ def second_tick(t):
       p[0]=sendtime[csecond]
     else:
       p[0]=0
-    # OLED display
+    oled.hline(xd,yd+8,8,1)
+    oled.show()
     oled.fill(0)
     oled.text("DST%d %02d:%02d NTP%d" %
       (sendtime[cdst],sendtime[chour],sendtime[cminute],ntpday),0,0)
     oled.text("20%02d-%02d-%02d %2s" %
       (sendtime[cyear],sendtime[cmonth],sendtime[cday],weekdaystr[sendtime[cweekday]]),0,8)
-    oled.show()
 
 def run():
   timer.init(mode=Timer.PERIODIC, period=1000, callback=second_tick)
