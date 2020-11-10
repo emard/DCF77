@@ -3,6 +3,7 @@ from micropython import const, alloc_emergency_exception_buf
 from uctypes import addressof
 from machine import Pin, Timer, I2C
 from esp32 import RMT
+from wifiman import get_connection
 import time, dst
 import ssd1306
 
@@ -195,6 +196,7 @@ def second_tick(t):
       set_ntp()
     if ntpday==0:
       ask.write_pulses([4000],start=0) # turn off transmitter
+      get_connection() # if not connected, reconnect to internet
     generate_time()
     generate_minute()
     # every 10 minutes synchronize seconds
@@ -220,4 +222,3 @@ generate_minute()
 second[0]=sendtime[csecond]
 print(minute)
 run()
- 
