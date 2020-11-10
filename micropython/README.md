@@ -6,9 +6,22 @@ and some capacitor chosen for example:
 
 L=4.22mH + C=1nF or L=0.96mH + C=4.7nF
 
+LC resonant frequency can be fine-tuned by positioning the coil
+on the ferrite core. Frequency is lowest when coil is at the middle
+of the ferrite core. When coil is moved to a side, frequency will
+be slighty higher.
+
+At resonance, depending on quality of LC circuit (Q factor),
+the voltage accross coil can be 15-60V when driven
+with 3.3V source. The signal can reach few meters
+and cover one average room, but can't reach thru
+multiple rooms.
+
 LC circuit is connected to ESP32 between
 GPIO15 and GND. 3.6V zener diode is for
-protection, not neccessary but recommended.
+protection, to prevent high voltage
+from LC circuit to return to the pin when
+ESP32 is suddenly turned off.
 
 ![LC circuit](/pic/LC.png)
 
@@ -25,10 +38,6 @@ Frequency and amplitude modulation is measured with oscilloscope
 connected to 3-turn wire as probe coil placed near the LC circuit.
 Tuning paramters are adjusted when measured with the scope.
 
-At resonance the voltage accross coil is 15-20V when driven
-with 3.3V source. The signal can reach few meters
-and cover one average room, but can't reach thru multiple
-rooms.
 
 # Installation
 
