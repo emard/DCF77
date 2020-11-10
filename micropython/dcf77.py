@@ -188,7 +188,7 @@ def second_tick(t):
       oled.text("%d"%bit,xd,yd)
       oled.hline(xd,yd+10,(bit+1),1)
       oled.hline(xd+bit+1,yd+8,7-bit,1)
-      oled.show()
+    oled.show()
     p[0]+=1
   else:
     if ntpday==0 or (sendtime[cday]!=ntpday and sendtime[cminute]==30):
