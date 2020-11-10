@@ -1,9 +1,10 @@
 from ntptime import settime
 from micropython import const, alloc_emergency_exception_buf
 from uctypes import addressof
-from machine import Pin, Timer
+from machine import Pin, Timer, I2C
 from esp32 import RMT
 import time, dst
+import ssd1306
 
 cyear=const(0)
 cmonth=const(1)
@@ -33,13 +34,21 @@ antena=Pin(15,Pin.OUT)
 ask=RMT(0,pin=antena,carrier_freq=0,clock_div=1) # 80 MHz
 ask.loop(True)
 
+i2c = I2C(scl=Pin(4), sda=Pin(5))
+oled = ssd1306.SSD1306_I2C(128, 64, i2c, 0x3c)
+oled.fill(0)
+oled.text("DCF77", 0, 0)
+oled.show()
+
+weekdaystr = ["MO","TU","WE","TH","FR","SA","SU"]
+
 # desired carrier frequency
 freq=77500
 # tuning paramters - adjust with scope
 # coarse tuning, about 75 Hz per step
-tuning_coarse=-1
+tuning_coarse=0
 # fine tuning 0-16, about 5 Hz per step
-tuning_fine=12
+tuning_fine=2
 
 period=int(ask.source_freq())//freq-tuning_coarse
 print("period", period)
@@ -48,7 +57,7 @@ print("period", period)
 on2=period//2
 off2=period-on2
 # power level 1 (adjust 25% amplitude on scope)
-on1=on2*12//100
+on1=on2*13//100
 off1=period-on1
 
 # debug - no level change
@@ -168,11 +177,14 @@ def second_tick(t):
   m=memoryview(minute)
   if p[0]<59:
     if ntpday>0:
+      bit=m[p[0]]&1
       led.on()
       ask.write_pulses(pwr1,start=0)
-      time.sleep_ms(100+100*(m[p[0]]&1))
+      time.sleep_ms(100*(bit+1))
       ask.write_pulses(pwr2,start=0)
       led.off()
+      oled.hline(p[0]*2,63-bit*2,bit+1,1)
+      oled.show()
     p[0]+=1
   else:
     if ntpday==0 or (sendtime[cday]!=ntpday and sendtime[cminute]==30):
@@ -181,12 +193,18 @@ def second_tick(t):
       ask.write_pulses([4000],start=0) # turn off transmitter
     generate_time()
     generate_minute()
-    #print(minute)
     # every 10 minutes synchronize seconds
     if sendtime[cminute]%10==5:
       p[0]=sendtime[csecond]
     else:
       p[0]=0
+    # OLED display
+    oled.fill(0)
+    oled.text("DST%d %02d:%02d NTP%d" %
+      (sendtime[cdst],sendtime[chour],sendtime[cminute],ntpday),0,0)
+    oled.text("20%02d-%02d-%02d %2s" %
+      (sendtime[cyear],sendtime[cmonth],sendtime[cday],weekdaystr[sendtime[cweekday]]),0,8)
+    oled.show()
 
 def run():
   timer.init(mode=Timer.PERIODIC, period=1000, callback=second_tick)
@@ -195,6 +213,7 @@ set_ntp()
 tuning(tuning_fine)
 generate_time()
 generate_minute()
+second[0]=sendtime[csecond]
 print(minute)
 run()
  
