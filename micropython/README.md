@@ -15,15 +15,15 @@ At resonance, quality of LC circuit is described by Q factor:
 
     Q = Voltage_accross_L/Voltage_source
 
-Typical Q = 5-20 for ferrite LC so the voltage accross coil L
-can be 15-60V when driven with 3.3V source. The signal can
+Typical Q = 10-50 for ferrite LC so the voltage accross coil L
+can be 30-150Vpp when driven with 3.3Vpp source. The signal can
 reach few meters and cover one average room, but can't
 reach thru multiple rooms.
 
 LC circuit is connected to ESP32 between
 GPIO15 and GND. 3.6V zener diode is for
 protection, to prevent high voltage
-from LC circuit to return to the pin when
+from high Q LC circuit to return to the pin when
 ESP32 is suddenly turned off.
 
 ![LC circuit](/pic/LC.png)
