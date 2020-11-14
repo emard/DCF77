@@ -103,6 +103,9 @@ def generate_bits():
 
 
 # Generate a square wave, it has 3rd and 5th harmonic
+# 15500 Hz square wave will be audible because
+# of lower harmonics from integer sampling at 44100 Hz
+# 15500 Hz sine wave would be completely silent
 def sine(frequency, length, rate, strength):
     length = int(length * rate)
     factor = float(frequency) * (math.pi * 2) / rate
@@ -124,8 +127,8 @@ def generate_tone(input):
     t = datetime.now()
     code = input[t.second:]
     # generate 1/5 frequency = 15500 Hz
-    # it falls into supported audio range.
-    # 5rd harmonic will become 77500 Hz
+    # it falls into supported audio range below 16 kHz.
+    # 5th harmonic will become 77500 Hz
     frequency = 77500//5
     #frequency = 500 # audible debug
     rate = 44100
