@@ -102,11 +102,12 @@ def generate_bits():
     return bits
 
 
-# Generate a sine wave
+# Generate a square wave, it has 3rd and 5th harmonic
 def sine(frequency, length, rate, strength):
     length = int(length * rate)
     factor = float(frequency) * (math.pi * 2) / rate
-    return np.sin(np.arange(length) * factor) * strength
+    #return np.sin(np.arange(length) * factor) * strength # sine wave
+    return np.sign(np.sin(np.arange(length) * factor)) * strength # square wave
 
 
 # Play a tone
@@ -122,7 +123,11 @@ def generate_tone(input):
     chunks = []
     t = datetime.now()
     code = input[t.second:]
-    frequency = 15500
+    # generate 1/5 frequency = 15500 Hz
+    # it falls into supported audio range.
+    # 5rd harmonic will become 77500 Hz
+    frequency = 77500//5
+    #frequency = 500 # audible debug
     rate = 44100
     p = pyaudio.PyAudio()
     stream = p.open(format=pyaudio.paFloat32, channels=1, rate=rate, output=1)
