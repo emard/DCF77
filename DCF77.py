@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from datetime import datetime, timedelta
 from pytz import timezone
 import pytz
@@ -146,7 +147,7 @@ def generate_tone(input):
 
 # Handle Ctrl + C
 def sigint_handler(signal, frame):
-    print '\nInterrupted'
+    print('\nInterrupted')
     sys.exit(0)
 
 
@@ -160,6 +161,6 @@ if __name__ == "__main__":
     while start_time.second == datetime.now().second:
         pass
 
-    print 'Transmitting DCF77 signal ({})\nPress Ctrl + C to stop.'.format(signal_timezone)
+    print('Transmitting DCF77 signal ({})\nPress Ctrl + C to stop.'.format(signal_timezone))
     generate_tone(seq)
-    print 'Transmission finished.'
+    print('Transmission finished.')
