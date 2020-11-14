@@ -44,9 +44,9 @@ Tuning paramters are adjusted when measured with the scope.
 
 # Installation
 
-Copy "dcf77.py", "dst.py", "ssd1306.py", "wifiman.py" and
+Copy "dcf77.py", "dst.py", "ssd1306.py", "wifiman.py"
 to root "/" of ESP32 flash or to "/lib" directory (it's the same).
-Edit "wifiman.conf" change passwords and copy to root "/" of ESP32.
+Edit "wifiman.conf", change passwords and copy to root "/" of ESP32.
 For autostart, at end of "main.py" after network is up,
 add this line:
 
