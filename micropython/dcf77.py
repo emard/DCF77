@@ -58,7 +58,7 @@ print("period", period)
 on2=period//2
 off2=period-on2
 # power level 1 (adjust 25% amplitude on scope)
-on1=on2*13//100
+on1=on2//8
 off1=period-on1
 
 # debug - no level change
