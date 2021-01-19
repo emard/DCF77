@@ -1,7 +1,7 @@
 from ntptime import settime
 from micropython import const, alloc_emergency_exception_buf
 from uctypes import addressof
-from machine import Pin, Timer, I2C
+from machine import Pin, Timer, I2C, WDT
 from esp32 import RMT
 from wifiman import get_connection
 import time, dst
@@ -211,6 +211,7 @@ def second_tick(t):
       (sendtime[cdst],sendtime[chour],sendtime[cminute],ntpday),0,0)
     oled.text("20%02d-%02d-%02d %2s" %
       (sendtime[cyear],sendtime[cmonth],sendtime[cday],weekdaystr[sendtime[cweekday]]),0,8)
+  wdt.feed()
 
 def run():
   timer.init(mode=Timer.PERIODIC, period=1000, callback=second_tick)
@@ -221,4 +222,5 @@ generate_time()
 generate_minute()
 second[0]=sendtime[csecond]
 print(minute)
+wdt=WDT(timeout=60000)
 run()
