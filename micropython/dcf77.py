@@ -218,11 +218,12 @@ def second_tick(t):
 def run():
   timer.init(mode=Timer.PERIODIC, period=1000, callback=second_tick)
 
-wdt=WDT(timeout=60000)
+wdt=WDT(timeout=120000)
 set_ntp()
 tuning(tuning_fine)
 generate_time()
 generate_minute()
 second[0]=sendtime[csecond]
 print(minute)
+wdt.feed()
 run()
