@@ -6,7 +6,8 @@ from gc import collect
 from esp32 import RMT
 from wifiman import get_connection
 import time, dst
-import ssd1306
+
+disp=const(0)
 
 cyear=const(0)
 cmonth=const(1)
@@ -36,11 +37,13 @@ antena=Pin(15,Pin.OUT)
 ask=RMT(0,pin=antena,carrier_freq=0,clock_div=1) # 80 MHz
 ask.loop(True)
 
-i2c = I2C(scl=Pin(4), sda=Pin(5))
-oled = ssd1306.SSD1306_I2C(128, 64, i2c, 0x3c)
-oled.fill(0)
-oled.text("DCF77", 0, 0)
-oled.show()
+if disp:
+  import ssd1306
+  i2c = I2C(scl=Pin(4), sda=Pin(5))
+  oled = ssd1306.SSD1306_I2C(128, 64, i2c, 0x3c)
+  oled.fill(0)
+  oled.text("DCF77", 0, 0)
+  oled.show()
 
 weekdaystr = ["MO","TU","WE","TH","FR","SA","SU"]
 
@@ -187,10 +190,12 @@ def second_tick(t):
       time.sleep_ms(100*(bit+1))
       ask.write_pulses(pwr2,start=0)
       led.off()
-      oled.text("%d"%bit,xd,yd)
-      oled.hline(xd,yd+10,(bit+1),1)
-      oled.hline(xd+bit+1,yd+8,7-bit,1)
-    oled.show()
+      if disp:
+        oled.text("%d"%bit,xd,yd)
+        oled.hline(xd,yd+10,(bit+1),1)
+        oled.hline(xd+bit+1,yd+8,7-bit,1)
+    if disp:
+      oled.show()
     p[0]+=1
   else:
     if ntpday==0 or (sendtime[cday]!=ntpday and sendtime[cminute]==30):
@@ -205,13 +210,14 @@ def second_tick(t):
       p[0]=sendtime[csecond]
     else:
       p[0]=0
-    oled.hline(xd,yd+8,8,1)
-    oled.show()
-    oled.fill(0)
-    oled.text("DST%d %02d:%02d NTP%d" %
-      (sendtime[cdst],sendtime[chour],sendtime[cminute],ntpday),0,0)
-    oled.text("20%02d-%02d-%02d %2s" %
-      (sendtime[cyear],sendtime[cmonth],sendtime[cday],weekdaystr[sendtime[cweekday]]),0,8)
+    if disp:
+      oled.hline(xd,yd+8,8,1)
+      oled.show()
+      oled.fill(0)
+      oled.text("DST%d %02d:%02d NTP%d" %
+        (sendtime[cdst],sendtime[chour],sendtime[cminute],ntpday),0,0)
+      oled.text("20%02d-%02d-%02d %2s" %
+        (sendtime[cyear],sendtime[cmonth],sendtime[cday],weekdaystr[sendtime[cweekday]]),0,8)
     collect()
   wdt.feed()
 
